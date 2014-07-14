@@ -3,35 +3,23 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 
 function preload() {
 
-    game.load.image('background','assets/misc/starfield.jpg');
-    game.load.image('ufo','assets/sprites/space-baddie.png');
+    game.load.image('background','assets/tests/debug-grid-1920x1920.png');
     game.load.image('player','assets/sprites/phaser-dude.png');
 
 }
 
 var player;
-var fixed;
 var cursors;
 
 function create() {
 
-    game.add.tileSprite(0, 0, 2000, 2000, 'background');
+    game.add.tileSprite(0, 0, 1920, 1920, 'background');
 
-    game.world.setBounds(0, 0, 1400, 1400);
-
-    for (var i = 0; i < 100; i++)
-    {
-        game.add.sprite(game.world.randomX, game.world.randomY, 'ufo');
-    }
+    game.world.setBounds(0, 0, 1920, 1920);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-    fixed = game.add.sprite(300, 320, 'player');
-    fixed.fixedToCamera = true;
-    fixed.cameraOffset.x = 300;
-    fixed.cameraOffset.y = 300;
-
-    player = game.add.sprite(150, 320, 'player');
+    player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
 
     game.physics.p2.enable(player);
 
@@ -47,20 +35,20 @@ function update() {
 
     if (cursors.up.isDown)
     {
-        player.body.moveUp(200)
+        player.body.moveUp(300)
     }
     else if (cursors.down.isDown)
     {
-        player.body.moveDown(200);
+        player.body.moveDown(300);
     }
 
     if (cursors.left.isDown)
     {
-        player.body.velocity.x = -200;
+        player.body.velocity.x = -300;
     }
     else if (cursors.right.isDown)
     {
-        player.body.moveRight(200);
+        player.body.moveRight(300);
     }
 
 }
@@ -68,7 +56,6 @@ function update() {
 function render() {
 
     game.debug.cameraInfo(game.camera, 32, 32);
-    game.debug.spriteCoords(player, 32, 200);
-    game.debug.spriteCoords(fixed, 600, 200);
+    game.debug.spriteCoords(player, 32, 500);
 
 }

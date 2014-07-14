@@ -9,6 +9,7 @@ function preload() {
 
 }
 
+var pad;
 var leftTriggerButton;
 var leftTriggerGfx;
 var rightTriggerGfx;
@@ -18,32 +19,35 @@ var indicator;
 function create() {
 
     game.stage.backgroundColor = '#736357';
-    game.input.gamepad.start();
 
     setupScene();
 
-    /*
-        Here we see two ways to get similar result. Left trigger is via 'hotkey button' style and using Phaser Signals.
-        Right trigger is via callbacks. NOTE the difference in the callback functions - right trigger must make a check
-        for which button we're listening to.
-     */
+    game.input.gamepad.start();
 
-    leftTriggerButton = game.input.gamepad.pad1.addButton(Phaser.Gamepad.XBOX360_LEFT_TRIGGER);
+    pad = game.input.gamepad.pad1;
+
+    pad.addCallbacks(this, { onConnect: addButtons });
+
+}
+
+function addButtons() {
+
+    leftTriggerButton = pad.getButton(Phaser.Gamepad.XBOX360_LEFT_TRIGGER);
+
     leftTriggerButton.onDown.add(onLeftTrigger);
     leftTriggerButton.onUp.add(onLeftTrigger);
     leftTriggerButton.onFloat.add(onLeftTrigger);
 
-    game.input.gamepad.pad1.addCallbacks(this, {
-        onFloat:onRightTrigger,
-        onUp: onRightTrigger,
-        onDown: onRightTrigger
-    });
+    rightTriggerButton = pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER);
 
-
+    rightTriggerButton.onDown.add(onRightTrigger);
+    rightTriggerButton.onUp.add(onRightTrigger);
+    rightTriggerButton.onFloat.add(onRightTrigger);
 
 }
 
 function onLeftTrigger(button, value) {
+
     leftTriggerGfx.clear();
     leftTriggerGfx.beginFill(0xFF700B, 1);
     leftTriggerGfx.lineStyle(2, 0xFFFFFF, 1);
@@ -51,10 +55,7 @@ function onLeftTrigger(button, value) {
     leftTriggerGfx.endFill();
 }
 
-function onRightTrigger(buttonCode,value) {
-    if(buttonCode !== Phaser.Gamepad.XBOX360_RIGHT_TRIGGER) {
-        return;
-    }
+function onRightTrigger(buttonCode, value) {
 
     rightTriggerGfx.clear();
     rightTriggerGfx.beginFill(0xFF700B, 1);
@@ -64,19 +65,23 @@ function onRightTrigger(buttonCode,value) {
 }
 
 function update() {
-    // Pad "connected or not" indicator
-    if(game.input.gamepad.supported && game.input.gamepad.active && game.input.gamepad.pad1.connected) {
+
+    if (game.input.gamepad.supported && game.input.gamepad.active && game.input.gamepad.pad1.connected)
+    {
         indicator.animations.frame = 0;
-    } else {
+    }
+    else
+    {
         indicator.animations.frame = 1;
     }
 
 }
 
 function setupScene() {
+
     indicator = game.add.sprite(10,10, 'controller-indicator');
     indicator.scale.x = indicator.scale.y = 2;
-    indicator.animations.frame = 1;
+    indicator.animations.frame = 0;
 
     leftTriggerGfx = game.add.graphics(300,550);
     leftTriggerGfx.beginFill(0xFF700B, 1);
@@ -89,5 +94,5 @@ function setupScene() {
     rightTriggerGfx.lineStyle(2, 0xFFFFFF, 1);
     rightTriggerGfx.drawRect(0, 0, 50, 5);
     rightTriggerGfx.endFill();
-}
 
+}

@@ -1,5 +1,5 @@
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 var tilesprite;
 var cursors;
@@ -17,14 +17,13 @@ var sprite;
 
 function create() {
 
-    // sprite = game.add.tileSprite(0, 0, 800, 600, 'mummy');
-    // sprite.animations.add('walk');
-    // sprite.animations.play('walk', 20, true);
+    sprite = game.add.tileSprite(0, 0, 800, 600, 'mummy');
+    sprite.animations.add('walk');
+    sprite.animations.play('walk', 20, true);
 
-    sprite = game.add.tileSprite(0, 0, 800, 600, 'seacreatures', 'octopus0002');
+    // sprite = game.add.tileSprite(0, 0, 800, 600, 'seacreatures', 'octopus0002');
     // sprite.animations.add('swim', Phaser.Animation.generateFrameNames('octopus', 0, 24, '', 4), 30, true);
     // sprite.animations.play('swim');
-
 
     cursors = game.input.keyboard.createCursorKeys();
 
