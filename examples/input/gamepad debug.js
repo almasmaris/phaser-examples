@@ -53,6 +53,7 @@ function onStartInput() {
     } else {
         game.input.gamepad.start();
         startInputButton.setFrames(1,1,1);
+        console.log(pad1._axesLen);
     }
 }
 
@@ -155,8 +156,8 @@ function setupText() {
         onUp: function(buttonCode, value, padIndex){
             activityGlobalText.setText('Last activity all pads: Pad index '+padIndex+' buttonCode: '+buttonCode+' | value: '+value);
         },
-        onAxis: function(axisState, padIndex) {
-            activityGlobalText.setText('Last activity all pads: Pad index '+padIndex+': axis '+axisState.axis+': '+axisState.value);
+        onAxis: function(pad, axis, value) {
+            activityGlobalText.setText('Last activity all pads: Pad index '+pad.index+': axis '+axis+': '+value);
         },
         onFloat: function(buttonCode, value, padIndex) {
             activityGlobalText.setText('Last activity all pads: Pad index '+padIndex+' buttonCode: '+buttonCode+' | value (float): '+value);
@@ -180,8 +181,8 @@ function addPadCallbacks(pad, text, index) {
         onUp: function(buttonCode, value){
             text.setText('Last activity pad '+index+': buttonCode: '+buttonCode+' | value: '+value);
         },
-        onAxis: function(axisState) {
-            text.setText('Last activity pad '+index+': axis '+axisState.axis+': '+axisState.value);
+        onAxis: function(pad, axis, value) {
+            text.setText('Last activity pad '+pad.index+': axis '+axis+': '+value);
         },
         onFloat: function(buttonCode, value) {
             text.setText('Last activity pad '+index+': buttonCode: '+buttonCode+' | value (float): '+value);

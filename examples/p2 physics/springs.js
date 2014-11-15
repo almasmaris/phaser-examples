@@ -26,12 +26,13 @@ function create() {
 
 	game.physics.p2.enable([sprite1, sprite2]);
 
-    sprite2.body.collideWorldBounds = false;
+    sprite1.body.collideWorldBounds = true;
+    sprite2.body.collideWorldBounds = true;
 
     //  Create our spring
     //  The parameters are: createSpring(sprite1, sprite2, restLength, stiffness, damping, worldA, worldB, localA, localB)
     //  See the docs for more details
-    var spring = game.physics.p2.createSpring(sprite1, sprite2, 150, 5, 1);
+    var spring = game.physics.p2.createSpring(sprite1, sprite2, 20, 10, 1);
 
     text = game.add.text(20, 20, 'move with arrow keys', { fill: '#ffffff' });
 
@@ -41,15 +42,15 @@ function create() {
 
 function update() {
 
-	sprite1.body.setZeroVelocity();
+	sprite2.body.setZeroVelocity();
 
     if (cursors.left.isDown)
     {
-    	sprite1.body.moveLeft(400);
+    	sprite2.body.moveLeft(400);
     }
     else if (cursors.right.isDown)
     {
-    	sprite1.body.moveRight(400);
+    	sprite2.body.moveRight(400);
     }
 
 }

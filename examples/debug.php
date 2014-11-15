@@ -101,6 +101,8 @@
             $tempFiles = $files;
         }
 
+        $ignore = array('dragonBones.js' => false, 'phaser_dragonbones.js' => false);
+
         foreach ($tempFiles as $key => $value)
         {
             if (is_array($value)) 
@@ -114,7 +116,11 @@
             {
                 $value2 = substr($value, 0, -3);
                 $file = urlencode($value);
-                $output .= "<div class=\"item\"><a href=\"debug.php?f=$section/$file\">$value2</a></div>";
+
+                if (!array_key_exists($value, $ignore))
+                {
+                    $output .= "<div class=\"item\"><a href=\"debug.php?f=$section/$file\">$value2</a></div>";
+                }
             } 
         }
 
@@ -130,20 +136,39 @@
         <script src="_site/js/jquery-2.0.3.min.js" type="text/javascript"></script>
         <!-- <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" /> -->
         <?php
-            $path = '../../phaser';
-            require('../../phaser/build/config.php');
+            $v = "2.1.0";
+
+            if (isset($_GET['phaser']))
+            {
+                echo "<script src=\"_site/phaser/phaser.{$_GET['phaser']}.min.js\" type=\"text/javascript\"></script>";
+            }
+            else
+            {
+                if (($_SERVER['SERVER_NAME'] == '192.168.0.100' || $_SERVER['SERVER_NAME'] == 'localhost'))
+                {
+                    $path = '../../phaser';
+                    require('../../phaser/build/config.php');
+                }
+                else
+                {
+                    echo "<script src=\"_site/phaser/phaser.{$v}.min.js\" type=\"text/javascript\"></script>";
+                }
+            }
         ?>
         <style>
             body {
                 font-family: Arial;
                 font-size: 14px;
-                background-color: #000000;
-                color: #fff;
             }
 
             a {
-                color: #fff;
+                color: #0000ff;
                 text-decoration: none;
+            }
+
+            a:Hover {
+                color: #ff0000;
+                text-decoration: underline;
             }
 
             input {
@@ -173,6 +198,7 @@
         <input type="button" id="start" value="start" />
         <input type="button" id="stop" value="stop" style="margin-left: 32px" />
         <input type="button" id="step" value="step" style="margin-left: 128px"/>
+        <input type="button" id="fs" value="fullscreen" style="margin-left: 128px"/>
 
         <?php
             echo buildList(false);
@@ -219,6 +245,21 @@
                 {
                     debugSprite.debug = false;
                 }
+            });
+
+            $('#fs').click(function(){
+
+                console.log('---- FULL SCREEN -------------------------------');
+            
+                if (game.scale.isFullScreen)
+                {
+                    game.scale.stopFullScreen();
+                }
+                else
+                {
+                    game.scale.startFullScreen(false);
+                }
+
             });
 
         </script>
