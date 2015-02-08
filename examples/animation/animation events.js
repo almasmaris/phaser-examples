@@ -15,29 +15,14 @@ var loopText;
 
 function create() {
 
-	game.stage.smoothed = false;
-
-	back = game.add.image(0, -400, 'lazur');
-	back.scale.set(2);
+    back = game.add.image(0, -400, 'lazur');
+    back.scale.set(2);
+    back.smoothed = false;
 
     mummy = game.add.sprite(200, 360, 'mummy', 5);
     mummy.scale.set(4);
+    mummy.smoothed = false;
     anim = mummy.animations.add('walk');
-
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-
-    game.physics.arcade.gravity.y = 100;
-
-    for (var i = 0; i < 100; i++)
-    {
-        var m = game.add.sprite(game.world.randomX, game.world.randomY, 'mummy', 5);
-        game.physics.arcade.enable(m);
-        m.animations.add('walk');
-        m.play('walk', game.rnd.between(5, 40), true);
-        m.body.velocity.x = game.rnd.between(-200, 200);
-        m.body.bounce.set(1);
-        m.body.collideWorldBounds = true;
-    }
 
     anim.onStart.add(animationStarted, this);
     anim.onLoop.add(animationLooped, this);
@@ -49,35 +34,35 @@ function create() {
 
 function animationStarted(sprite, animation) {
 
-	game.add.text(32, 32, 'Animation started', { fill: 'white' });
+    game.add.text(32, 32, 'Animation started', { fill: 'white' });
 
 }
 
 function animationLooped(sprite, animation) {
 
-	if (animation.loopCount === 1)
-	{
-		loopText = game.add.text(32, 64, 'Animation looped', { fill: 'white' });
-	}
-	else
-	{
-		loopText.text = 'Animation looped x2';
-		animation.loop = false;
-	}
+    if (animation.loopCount === 1)
+    {
+        loopText = game.add.text(32, 64, 'Animation looped', { fill: 'white' });
+    }
+    else
+    {
+        loopText.text = 'Animation looped x2';
+        animation.loop = false;
+    }
 
 }
 
 function animationStopped(sprite, animation) {
 
-	game.add.text(32, 64+32, 'Animation stopped', { fill: 'white' });
+    game.add.text(32, 64+32, 'Animation stopped', { fill: 'white' });
 
 }
 
 function update() {
 
-	if (anim.isPlaying)
-	{
-		back.x -= 1;
-	}
+    if (anim.isPlaying)
+    {
+        back.x -= 1;
+    }
 
 }

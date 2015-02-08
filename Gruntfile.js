@@ -1,6 +1,7 @@
 module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-connect');
+
     grunt.loadTasks('./tasks');
 
     grunt.initConfig({

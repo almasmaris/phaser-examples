@@ -59,6 +59,7 @@ var musics = [
 ]
 
 function preload() {
+
     // load our YM plugin
     game.load.script('YM', '../plugins/YM.js');
 
@@ -69,13 +70,15 @@ function preload() {
     musics.forEach(function (music) {
         game.load.binary(music.name, music.file);
     });
+
 }
 
 function create() {
+
     var musicsList, style, list;
 
     // sinusoid vu meter moves
-    moveData = game.make.tween({ y: 0 }).to( { y: 300 }, 1000, Phaser.Easing.Sinusoidal.In).yoyo(true).generateData(60);
+    moveData = game.make.tween({ y: 0 }).to( { y: 300 }, 1000, "Sine.easeIn").yoyo(true).generateData(60);
 
     // prepare background
     game.add.sprite(0, 0, 'bg');
@@ -89,9 +92,11 @@ function create() {
         musicsList += music.author + " " + music.name + "\n";
     });
 
-    style = { font: "18px/25px Arial", fill: "#ffffff", align: "center" };
-    list = game.add.text(game.world.centerX, 0, musicsList, style, musicListGroup);
+    style = { font: "18px Arial", fill: "#ffffff", align: "center" };
+    list = game.add.text(game.world.centerX, 2, musicsList, style, musicListGroup);
+    list.lineSpacing = 8;
     list.anchor.set(0.5, 0);
+
     musicListGroup.y = 380;
 
     // selectors graphics
@@ -120,16 +125,19 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-    time = game.time.now;
+    time = game.time.time;
 }
 
 function moveSelector (index) {
-    selector.y = index * 25;
+    selector.y = index * 26;
 }
 
 function changeSong (index) {
+
     // load song data from game cache
     var data =  game.cache.getBinary(musics[index].name);
+
+    // console.log(data);
 
     if (!ym) {
         // create our YM instance
@@ -149,11 +157,13 @@ function changeSong (index) {
     ym.play();
 
     // move "current playing" selector
-    currentPlayingSelector.y = (index * 25);
+    // currentPlayingSelector.y = (index * 25);
+    currentPlayingSelector.y = selector.y;
 }
 
 // draw one vu meter
 function buildVu (vu, colorbg, color, width) {
+
     var height = 75,
         offsetY = (game.world.width - width) / 2;
 
@@ -174,28 +184,39 @@ function buildVu (vu, colorbg, color, width) {
 }
 
 function update() {
+
     // max vu meter width
     var max = game.world.width / 1.5;
 
     // smooth the vu meter real values
-    for (var i = 0; i <= 2; i++) {
-        if (oldValues[i] !== ym.vu[i]) {
-            values[i] = max;
-        } else if (values[i]-- < 1) {
-            values[i] = 0;
+    for (var i = 0; i <= 2; i++)
+    {
+        if (ym.vu[i] > 1)
+        {
+            values[i] = ym.vu[i] * (max / 40);
+        }
+        else
+        {
+            values[i] -= 4;
+
+            if (values[i] < 1)
+            {
+                values[i] = 0;
+            }
         }
     }
 
     // draw the vu meter for each channel
-    buildVu(vu3, 0xab124f, 0xe9128d, 5 + values[0]);
-    buildVu(vu2, 0x8d126e, 0xca12ab, 5 + values[1]);
-    buildVu(vu1, 0x6e128d, 0xab12ca, 5 + values[2]);
+    buildVu(vu3, 0xab124f, 0xe9128d, values[0]);
+    buildVu(vu2, 0x8d126e, 0xca12ab, values[1]);
+    buildVu(vu1, 0x6e128d, 0xab12ca, values[2]);
 
     // vu meter moves
     [vu1, vu2, vu3].forEach(function (vu, n) {
         var p;
 
-        if (vu.movePosIndex >= moveData.length) {
+        if (vu.movePosIndex >= moveData.length)
+        {
             vu.movePosIndex = 0;
         }
 
@@ -208,30 +229,37 @@ function update() {
     });
 
     // keep track of old vu meter values for next iteration
-    for (var i = 0; i <= 2; i++) {
+    for (var i = 0; i <= 2; i++)
+    {
         oldValues[i] = ym.vu[i];
     }
 
     // handle cursors for song selection
-    if (game.time.now - time > 200) {
-        if (cursors.up.isDown && musicIndex > 0) {
+    if (game.time.time - time > 200)
+    {
+        if (cursors.up.isDown && musicIndex > 0)
+        {
             musicIndex -= 1;
             moveSelector(musicIndex);
-            time = game.time.now;
+            time = game.time.time;
 
-        } else if (cursors.down.isDown && musicIndex < musics.length - 1) {
+        }
+        else if (cursors.down.isDown && musicIndex < musics.length - 1)
+        {
             musicIndex += 1;
             moveSelector(musicIndex);
-            time = game.time.now;
-
-        } else if (spacebar.isDown) {
+            time = game.time.time;
+        }
+        else if (spacebar.isDown)
+        {
             changeSong(musicIndex);
-            time = game.time.now;
+            time = game.time.time;
         }
     }
 }
 
 function render() {
+
     // some info can be get from the ym instance
     game.debug.text('Title  : ' + ym.info.title, 16, 24);
     game.debug.text('Author : ' + ym.info.author, 16, 40);

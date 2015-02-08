@@ -16,6 +16,8 @@ var cursors;
 
 function create() {
 
+    game.world.setBounds(0, 0, 1600, 1200);
+
     game.add.image(0, 0, 'sky');
 
 	//	Enable p2 physics
@@ -82,8 +84,10 @@ function update() {
 }
 
 function switchDirections() {
+
     //  This simply flips the directions of the kinematic objects. The P2 mpxi function
     //  is used to convert from the p2 physics value back into pxiels.
     kinematic1.body.velocity.x = game.physics.p2.mpxi(kinematic1.body.velocity.x) * -1;
     kinematic2.body.velocity.x = game.physics.p2.mpxi(kinematic2.body.velocity.x) * -1;
+
 }

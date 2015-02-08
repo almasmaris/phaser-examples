@@ -21,7 +21,12 @@ function create() {
 
     button.onInputOver.add(over, this);
     button.onInputOut.add(out, this);
+    button.onInputUp.add(up, this);
 
+}
+
+function up() {
+    console.log('button up', arguments);
 }
 
 function over() {
